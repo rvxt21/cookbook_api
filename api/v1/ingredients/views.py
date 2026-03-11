@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 from rest_framework.generics import ListAPIView, GenericAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -22,5 +23,23 @@ class IngredientCreateAPI(GenericAPIView):
             serializer.save()
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class IngredientUpdateAPI(GenericAPIView):
+    def put(self, request: Request, pk: int) -> Response:
+        ingredient = get_object_or_404(Ingredient, pk=pk)
+
+        serializer = IngredientCreateSerializer(
+            instance=ingredient, data=request.data
+        )
+        if serializer.is_valid():
+            ingredient = serializer.save()
+
+            return Response(
+                IngredientDisplaySerializer(ingredient).data,
+                status=status.HTTP_200_OK,
+            )
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
