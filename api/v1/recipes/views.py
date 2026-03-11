@@ -1,7 +1,12 @@
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.request import Request
-from rest_framework.generics import ListAPIView, RetrieveAPIView, GenericAPIView
+from rest_framework.generics import (
+    ListAPIView,
+    RetrieveAPIView,
+    GenericAPIView,
+    DestroyAPIView,
+)
 from rest_framework.exceptions import ParseError
 from rest_framework import status
 from recipes.models import Recipe
@@ -69,3 +74,12 @@ class RecipeUpdateAPI(GenericAPIView):
             )
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class RecipeDeleteAPI(GenericAPIView):
+    def delete(self, request: Request, pk: int) -> Response:
+        recipe = get_object_or_404(Recipe, pk=pk)
+
+        recipe.delete()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)

@@ -4,6 +4,7 @@ from api.v1.recipes.views import (
     RecipeDetailAPI,
     RecipeCreateAPI,
     RecipeUpdateAPI,
+    RecipeDeleteAPI,
 )
 
 urlpatterns = [
@@ -11,4 +12,5 @@ urlpatterns = [
     path("<int:pk>/", RecipeDetailAPI.as_view(), name="recipe-detail"),
     path("create/", RecipeCreateAPI.as_view(), name="recipe-create"),
     path("<int:pk>/update/", RecipeUpdateAPI.as_view(), name="recipe-update"),
+    path("<int:pk>/delete/", RecipeDeleteAPI.as_view(), name="recipe-delete"),
 ]
