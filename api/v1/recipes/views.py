@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework.generics import ListAPIView, RetrieveAPIView, GenericAPIView
@@ -7,6 +8,7 @@ from recipes.models import Recipe
 from api.v1.recipes.serializers import (
     RecipeDisplaySerializer,
     RecipeCreateSerializer,
+    RecipeUpdateSerializer,
 )
 
 
@@ -38,6 +40,25 @@ class RecipeDetailAPI(RetrieveAPIView):
 class RecipeCreateAPI(GenericAPIView):
     def post(self, request: Request) -> Response:
         serializer = RecipeCreateSerializer(data=request.data)
+
+        if serializer.is_valid():
+            recipe = serializer.save()
+
+            return Response(
+                data=RecipeDisplaySerializer(recipe).data,
+                status=status.HTTP_201_CREATED,
+            )
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class RecipeUpdateAPI(GenericAPIView):
+    def patch(self, request: Request, pk: int) -> Response:
+        recipe = get_object_or_404(Recipe, pk=pk)
+
+        serializer = RecipeUpdateSerializer(
+            instance=recipe, data=request.data, partial=True
+        )
 
         if serializer.is_valid():
             recipe = serializer.save()

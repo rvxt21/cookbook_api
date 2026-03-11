@@ -29,3 +29,25 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Recipe
         fields = ["name", "description", "cooking_time", "meal_type"]
+
+
+class RecipeUpdateSerializer(serializers.Serializer):
+    name = serializers.CharField(required=False, allow_blank=True)
+    description = serializers.CharField(required=False, allow_blank=True)
+    cooking_time = serializers.IntegerField(required=False)
+    meal_type = serializers.ChoiceField(
+        choices=Recipe.MealType.choices, required=False
+    )
+
+    def update(self, instance, validated_data):
+        instance.name = validated_data.get("name", instance.name)
+        instance.description = validated_data.get(
+            "description", instance.description
+        )
+        instance.cooking_time = validated_data.get(
+            "cooking_time", instance.cooking_time
+        )
+        instance.meal_type = validated_data.get("meal_type", instance.meal_type)
+
+        instance.save()
+        return instance
