@@ -5,7 +5,6 @@ from rest_framework.generics import (
     ListAPIView,
     RetrieveAPIView,
     GenericAPIView,
-    DestroyAPIView,
 )
 from rest_framework.exceptions import ParseError
 from rest_framework import status
