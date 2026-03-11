@@ -1,10 +1,13 @@
 from rest_framework.response import Response
 from rest_framework.request import Request
-from rest_framework.generics import ListAPIView, RetrieveAPIView
+from rest_framework.generics import ListAPIView, RetrieveAPIView, GenericAPIView
 from rest_framework.exceptions import ParseError
 from rest_framework import status
 from recipes.models import Recipe
-from api.v1.recipes.serializers import RecipeDisplaySerializer
+from api.v1.recipes.serializers import (
+    RecipeDisplaySerializer,
+    RecipeCreateSerializer,
+)
 
 
 class RecipeListAPI(ListAPIView):
@@ -30,3 +33,18 @@ class RecipeListAPI(ListAPIView):
 class RecipeDetailAPI(RetrieveAPIView):
     queryset = Recipe.objects.all()
     serializer_class = RecipeDisplaySerializer
+
+
+class RecipeCreateAPI(GenericAPIView):
+    def post(self, request: Request) -> Response:
+        serializer = RecipeCreateSerializer(data=request.data)
+
+        if serializer.is_valid():
+            recipe = serializer.save()
+
+            return Response(
+                data=RecipeDisplaySerializer(recipe).data,
+                status=status.HTTP_201_CREATED,
+            )
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

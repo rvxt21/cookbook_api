@@ -23,3 +23,9 @@ class RecipeDisplaySerializer(serializers.ModelSerializer):
             "meal_type",
             "steps",
         ]
+
+
+class RecipeCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Recipe
+        fields = ["name", "description", "cooking_time", "meal_type"]
