@@ -1,6 +1,6 @@
 from rest_framework.response import Response
 from rest_framework.request import Request
-from rest_framework.generics import ListAPIView
+from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.exceptions import ParseError
 from rest_framework import status
 from recipes.models import Recipe
@@ -25,3 +25,8 @@ class RecipeListAPI(ListAPIView):
             queryset = queryset.filter(meal_type=meal_type_param)
 
         return queryset
+
+
+class RecipeDetailAPI(RetrieveAPIView):
+    queryset = Recipe.objects.all()
+    serializer_class = RecipeDisplaySerializer
