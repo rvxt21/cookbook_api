@@ -43,3 +43,12 @@ class IngredientUpdateAPI(GenericAPIView):
             )
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class IngredientDeleteAPI(GenericAPIView):
+    def delete(self, request: Request, pk: int):
+        ingredient = get_object_or_404(Ingredient, pk=pk)
+
+        ingredient.delete()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
