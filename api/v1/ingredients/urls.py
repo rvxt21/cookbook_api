@@ -1,10 +1,21 @@
 from django.urls import path
+from rest_framework.routers import DefaultRouter
+
 from api.v1.ingredients.views import (
     IngredientListAPI,
     IngredientCreateAPI,
     IngredientUpdateAPI,
     IngredientDeleteAPI,
     IngredientDetailAPI,
+    IngredientTypeViewSet,
+    RecipeIngredientCreateAPI,
+    RecipeIngredientDeleteAPI,
+)
+
+router = DefaultRouter()
+
+router.register(
+    r"ingredient_types", IngredientTypeViewSet, basename="ingredient_type"
 )
 
 urlpatterns = [
@@ -21,8 +32,13 @@ urlpatterns = [
         name="ingredient-delete",
     ),
     path(
-        "ingredients/<int:pk>/",
+        "<int:pk>/",
         IngredientDetailAPI.as_view(),
         name="ingredient-detail",
     ),
-]
+    path("recipe_ingredients/create/", RecipeIngredientCreateAPI.as_view()),
+    path(
+        "recipe_ingredients/<int:pk>/delete/",
+        RecipeIngredientDeleteAPI.as_view(),
+    ),
+] + router.urls
