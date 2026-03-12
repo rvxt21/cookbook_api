@@ -9,3 +9,5 @@ router = DefaultRouter()
 router.register(
     r"ingredient_types", IngredientTypeViewSet, basename="ingredient_type"
 )
+
+urlpatterns = [*router.urls]
