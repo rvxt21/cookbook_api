@@ -52,3 +52,11 @@ class IngredientDeleteAPI(GenericAPIView):
         ingredient.delete()
 
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class IngredientDetailAPI(GenericAPIView):
+    def get(self, request: Request, pk: int) -> Response:
+        ingredient = get_object_or_404(Ingredient, pk=pk)
+        serializer = IngredientDisplaySerializer(ingredient)
+
+        return Response(serializer.data)

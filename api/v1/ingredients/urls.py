@@ -4,6 +4,7 @@ from api.v1.ingredients.views import (
     IngredientCreateAPI,
     IngredientUpdateAPI,
     IngredientDeleteAPI,
+    IngredientDetailAPI,
 )
 
 urlpatterns = [
@@ -18,5 +19,10 @@ urlpatterns = [
         "<int:pk>/delete/",
         IngredientDeleteAPI.as_view(),
         name="ingredient-delete",
+    ),
+    path(
+        "ingredients/<int:pk>/",
+        IngredientDetailAPI.as_view(),
+        name="ingredient-detail",
     ),
 ]
