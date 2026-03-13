@@ -8,4 +8,5 @@ dependencies = [
     "django>=6.0.3",
     "django-environ>=0.13.0",
     "djangorestframework>=3.16.1",
+    "kagglehub[pandas-datasets]>=1.0.0",
 ]
