@@ -1,5 +1,8 @@
 from rest_framework import serializers
 from recipes.models import Recipe, RecipeStep
+from api.v1.recipe_ingredients.serializers import (
+    RecipeIngredientDisplaySerializer,
+)
 
 
 class RecipeStepDisplaySerializer(serializers.ModelSerializer):
@@ -9,6 +12,9 @@ class RecipeStepDisplaySerializer(serializers.ModelSerializer):
 
 
 class RecipeDisplaySerializer(serializers.ModelSerializer):
+    ingredients = RecipeIngredientDisplaySerializer(
+        source="recipeingredient_set", many=True, read_only=True
+    )
     steps = RecipeStepDisplaySerializer(
         source="recipe_steps", many=True, read_only=True
     )
@@ -21,6 +27,7 @@ class RecipeDisplaySerializer(serializers.ModelSerializer):
             "description",
             "time_in_minutes",
             "meal_type",
+            "ingredients",
             "steps",
         ]
 
