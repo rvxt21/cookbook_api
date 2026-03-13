@@ -1,14 +1,16 @@
+from typing import Any
+from django.db import transaction
 from rest_framework import serializers
 from recipes.models import Recipe, RecipeStep
+from ingredients.models import RecipeIngredient
 from api.v1.recipe_ingredients.serializers import (
     RecipeIngredientDisplaySerializer,
+    RecipeIngredientNestedCreateSerializer,
 )
-
-
-class RecipeStepDisplaySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = RecipeStep
-        fields = ["order", "description"]
+from api.v1.recipe_steps.serializers import (
+    RecipeStepDisplaySerializer,
+    RecipeStepCreateNestedSerializer,
+)
 
 
 class RecipeDisplaySerializer(serializers.ModelSerializer):
@@ -36,6 +38,53 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Recipe
         fields = ["name", "description", "cooking_time", "meal_type"]
+
+
+class RecipeCreateFullInfoSerializer(serializers.ModelSerializer):
+    ingredients = RecipeIngredientNestedCreateSerializer(many=True)
+    steps = RecipeStepCreateNestedSerializer(many=True)
+
+    class Meta:
+        model = Recipe
+        fields = [
+            "name",
+            "description",
+            "cooking_time",
+            "meal_type",
+            "ingredients",
+            "steps",
+        ]
+
+    @transaction.atomic()
+    def create(self, validated_data: dict[str, Any]):
+        ingredients = validated_data.pop("ingredients")
+        steps = validated_data.pop("steps")
+
+        recipe = Recipe.objects.create(**validated_data)
+
+        recipe_ingredients = [
+            RecipeIngredient(
+                recipe=recipe,
+                ingredient=item["ingredient"],
+                ingredient_type=item["ingredient_type"],
+                count=item["count"],
+            )
+            for item in ingredients
+        ]
+
+        RecipeIngredient.objects.bulk_create(recipe_ingredients)
+
+        recipe_steps = [
+            RecipeStep(
+                recipe=recipe,
+                order=item["order"],
+                description=item["description"],
+            )
+            for item in steps
+        ]
+        RecipeStep.objects.bulk_create(recipe_steps)
+
+        return recipe
 
 
 class RecipeUpdateSerializer(serializers.Serializer):

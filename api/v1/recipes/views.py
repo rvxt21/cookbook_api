@@ -12,6 +12,7 @@ from recipes.models import Recipe
 from api.v1.recipes.serializers import (
     RecipeDisplaySerializer,
     RecipeCreateSerializer,
+    RecipeCreateFullInfoSerializer,
     RecipeUpdateSerializer,
 )
 
@@ -44,6 +45,21 @@ class RecipeDetailAPI(RetrieveAPIView):
 class RecipeCreateAPI(GenericAPIView):
     def post(self, request: Request) -> Response:
         serializer = RecipeCreateSerializer(data=request.data)
+
+        if serializer.is_valid():
+            recipe = serializer.save()
+
+            return Response(
+                data=RecipeDisplaySerializer(recipe).data,
+                status=status.HTTP_201_CREATED,
+            )
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class RecipeCreateNestedAPI(GenericAPIView):
+    def post(self, request: Request) -> Response:
+        serializer = RecipeCreateFullInfoSerializer(data=request.data)
 
         if serializer.is_valid():
             recipe = serializer.save()

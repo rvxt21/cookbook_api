@@ -27,3 +27,13 @@ class RecipeIngredientCreateSerializer(serializers.Serializer):
 
     def create(self, validated_data):
         return RecipeIngredient.objects.create(**validated_data)
+
+
+class RecipeIngredientNestedCreateSerializer(serializers.Serializer):
+    ingredient = serializers.PrimaryKeyRelatedField(
+        queryset=Ingredient.objects.all()
+    )
+    ingredient_type = serializers.PrimaryKeyRelatedField(
+        queryset=IngredientType.objects.all()
+    )
+    count = serializers.IntegerField()
