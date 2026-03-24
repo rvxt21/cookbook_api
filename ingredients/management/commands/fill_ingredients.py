@@ -62,7 +62,7 @@ class Command(BaseCommand):
 
         self.stdout.write(
             self.style.SUCCESS(
-                f"Successfully seeded {created_ingredients}ingredients!"
+                f"Successfully seeded {created_ingredients} ingredients!"
             )
         )
 
