@@ -1,17 +1,20 @@
-from django.contrib.auth import get_user_model
+import typing
+
+if typing.TYPE_CHECKING:
+    from users.models import User
 
 
 def create_user(
     email: str,
-    password: str = None,
+    password: str = "",
     first_name: str = "",
     surname: str = "",
     is_staff: bool = False,
     is_superuser: bool = False,
     is_active: bool = True,
     **extra_fields,
-):
-    User = get_user_model()
+) -> "User":
+    from users.models import User
 
     user = User(
         email=email,
