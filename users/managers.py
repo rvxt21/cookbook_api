@@ -4,7 +4,9 @@ from users.services.crud import create_user
 
 
 class CustomUserManager(BaseUserManager):
-    def create_user(self, email: str, password: str = None, **extra_fields):
+    def create_user(
+        self, email: str, password: str | None = None, **extra_fields
+    ):
         if not email:
             raise ValueError("The Email must be set")
 
@@ -12,7 +14,7 @@ class CustomUserManager(BaseUserManager):
         return create_user(email=email, password=password, **extra_fields)
 
     def create_superuser(
-        self, email: str, password: str = None, **extra_fields
+        self, email: str, password: str | None = None, **extra_fields
     ):
         extra_fields.setdefault("is_staff", True)
         extra_fields.setdefault("is_superuser", True)
